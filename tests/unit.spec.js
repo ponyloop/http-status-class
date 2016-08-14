@@ -1,6 +1,8 @@
 const { describe, it } = require('mocha');
 const { expect } = require('chai');
 const statusClass = require('../src/matcher');
+const { StatusCodeError, StatusCodeTypeError } = require('../src/errors');
+const statusClassSequence = require('../src/helpers/sequence');
 
 
 describe('Constants', () => {
@@ -77,6 +79,11 @@ describe('Matcher', () => {
 		expect(statusClass.match).instanceOf(Function);
 	});
 
+  it('should consume Numbers and Strings', () => {
+    expect(statusClass.match.bind(null, 404)).to.not.throw(Error);
+    expect(statusClass.match.bind(null, '404')).to.not.throw(Error);
+  });
+
 
 	describe('when status code is 1**', () => {
 		it('should return INFORMATIONAL', () => {
@@ -128,6 +135,25 @@ describe('Matcher', () => {
 		})
 	});
 
+  describe('when status code is invalid', () => {
+    it('should thrown an error', () => {
+       expect(statusClass.match.bind(null, 867)).to.throw(StatusCodeError);
+    })
+  });
+
+  describe('when status code is invalid but has the same class as valid', () => {
+    it('should thrown an error', () => {
+       expect(statusClass.match.bind(null, 555)).to.throw(StatusCodeError);
+    })
+  });
+
+  describe('when status code is null or undefined', () => {
+    it('should thrown an error', () => {
+      expect(statusClass.match.bind(null, undefined)).to.throw(StatusCodeTypeError);
+      expect(statusClass.match.bind(null, null)).to.throw(StatusCodeTypeError);
+    })
+  });
+
 });
 
 
@@ -143,6 +169,11 @@ describe('Helpers', () => {
 			expect(statusClass.isInformational).instanceOf(Function);
 		});
 
+    it('should consume Numbers and Strings', () => {
+      expect(statusClass.isInformational.bind(null, 404)).to.not.throw(Error);
+      expect(statusClass.isInformational.bind(null, '404')).to.not.throw(Error);
+    });
+
 		it('should return true if class is 1**', () => {
 			const codes = statusClassSequence(statusClass.INFORMATIONAL);
 
@@ -154,6 +185,13 @@ describe('Helpers', () => {
 		it('should return false if class is not 1**', () => {
 			expect(statusClass.isInformational(301)).to.be.false;
 		});
+
+    describe('when status code is null or undefined', () => {
+      it('should thrown an error', () => {
+        expect(statusClass.isInformational.bind(null, undefined)).to.throw(StatusCodeTypeError);
+        expect(statusClass.isInformational.bind(null, null)).to.throw(StatusCodeTypeError);
+      })
+    });
 	});
 
 	describe('isSuccess', () => {
@@ -166,6 +204,11 @@ describe('Helpers', () => {
 			expect(statusClass.isSuccess).instanceOf(Function);
 		});
 
+    it('should consume Numbers and Strings', () => {
+      expect(statusClass.isSuccess.bind(null, 404)).to.not.throw(Error);
+      expect(statusClass.isSuccess.bind(null, '404')).to.not.throw(Error);
+    });
+
 		it('should return true if class is 2**', () => {
 			const codes = statusClassSequence(statusClass.SUCCESS);
 
@@ -177,6 +220,13 @@ describe('Helpers', () => {
 		it('should return false if class is not 2**', () => {
 			expect(statusClass.isSuccess(301)).to.be.false;
 		});
+
+    describe('when status code is null or undefined', () => {
+      it('should thrown an error', () => {
+        expect(statusClass.isSuccess.bind(null, undefined)).to.throw(StatusCodeTypeError);
+        expect(statusClass.isSuccess.bind(null, null)).to.throw(StatusCodeTypeError);
+      })
+    });
 	});
 
 	describe('isRedirection', () => {
@@ -189,6 +239,11 @@ describe('Helpers', () => {
 			expect(statusClass.isRedirection).instanceOf(Function);
 		});
 
+    it('should consume Numbers and Strings', () => {
+      expect(statusClass.isRedirection.bind(null, 404)).to.not.throw(Error);
+      expect(statusClass.isRedirection.bind(null, '404')).to.not.throw(Error);
+    });
+
 		it('should return true if class is 3**', () => {
 			const codes = statusClassSequence(statusClass.REDIRECTION);
 
@@ -200,6 +255,13 @@ describe('Helpers', () => {
 		it('should return false if class is not 3**', () => {
 			expect(statusClass.isRedirection(200)).to.be.false;
 		});
+
+    describe('when status code is null or undefined', () => {
+      it('should thrown an error', () => {
+        expect(statusClass.isRedirection.bind(null, undefined)).to.throw(StatusCodeTypeError);
+        expect(statusClass.isRedirection.bind(null, null)).to.throw(StatusCodeTypeError);
+      })
+    });
 	});
 
 	describe('isClientError', () => {
@@ -212,6 +274,11 @@ describe('Helpers', () => {
 			expect(statusClass.isClientError).instanceOf(Function);
 		});
 
+    it('should consume Numbers and Strings', () => {
+      expect(statusClass.isClientError.bind(null, 404)).to.not.throw(Error);
+      expect(statusClass.isClientError.bind(null, '404')).to.not.throw(Error);
+    });
+
 		it('should return true if class is 4**', () => {
 			const codes = statusClassSequence(statusClass.CLIENT_ERROR);
 
@@ -223,6 +290,13 @@ describe('Helpers', () => {
 		it('should return false if class is not 4**', () => {
 			expect(statusClass.isClientError(200)).to.be.false;
 		});
+
+    describe('when status code is null or undefined', () => {
+      it('should thrown an error', () => {
+        expect(statusClass.isClientError.bind(null, undefined)).to.throw(StatusCodeTypeError);
+        expect(statusClass.isClientError.bind(null, null)).to.throw(StatusCodeTypeError);
+      })
+    });
 	});
 
 	describe('isServerError', () => {
@@ -235,6 +309,11 @@ describe('Helpers', () => {
 			expect(statusClass.isServerError).instanceOf(Function);
 		});
 
+    it('should consume Numbers and Strings', () => {
+      expect(statusClass.isServerError.bind(null, 404)).to.not.throw(Error);
+      expect(statusClass.isServerError.bind(null, '404')).to.not.throw(Error);
+    });
+
 		it('should return true if class is 5**', () => {
 			const codes = statusClassSequence(statusClass.SERVER_ERROR);
 
@@ -246,17 +325,13 @@ describe('Helpers', () => {
 		it('should return false if class is not 5**', () => {
 			expect(statusClass.isServerError(200)).to.be.false;
 		});
+
+    describe('when status code is null or undefined', () => {
+      it('should thrown an error', () => {
+        expect(statusClass.isServerError.bind(null, undefined)).to.throw(StatusCodeTypeError);
+        expect(statusClass.isServerError.bind(null, null)).to.throw(StatusCodeTypeError);
+      })
+    });
 	});
 
 });
-
-
-function* statusClassSequence(num) {
-	const lengths = [3, 8, 8, 29, 11];
-	const extras = [null, [226], null, [431, 444, 451, 499], [599]];
-
-	for (let i=0; i<lengths[num-1]; i++) yield num * 100 + i;
-
-
-	if (extras[num - 1]) yield* extras[num - 1];
-}
