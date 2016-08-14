@@ -1,7 +1,15 @@
 {
+  "name": "http-status-class",
+  "version": "0.1.0",
   "devDependencies": {
+    "babel": "^6.5.2",
+    "babelify": "^7.3.0",
+    "browserify": "^13.1.0",
     "chai": "^3.5.0",
-    "mocha": "^3.0.2"
+    "mocha": "^3.0.2",
+    "rollup": "^0.34.8",
+    "rollup-plugin-babel": "^2.6.1",
+    "rollupify": "^0.3.4"
   },
   "scripts": {
     "test": "node_modules/mocha/bin/mocha tests --debug"
